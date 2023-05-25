@@ -14,9 +14,9 @@
 
 char	*get_env_path(char **envp)
 {
-	while (ft_strncmp("PATH=", *envp, 5))
+	while (*envp && ft_strncmp("PATH=", *envp, 5))
 		envp++;
-	if (!*envp)
+	if (*envp == NULL)
 		return (NULL);
 	return (*envp + 5);
 }
@@ -49,9 +49,9 @@ void	wait_childs(pid_t pid1, pid_t pid2)
 			exit_status2 = WEXITSTATUS(status2);
 	}
 	if (exit_status1 != 0)
-		exit(0);
+		exit(exit_status1);
 	if (exit_status2 != 0)
-		exit(0);
+		exit(exit_status2);
 	exit(0);
 }
 

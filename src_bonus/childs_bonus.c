@@ -1,35 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   childs.c                                           :+:      :+:    :+:   */
+/*   childs_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fsalazar <fsalazar@student.42madrid.com:>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/19 12:30:18 by fsalazar          #+#    #+#             */
-/*   Updated: 2023/05/19 12:30:19 by fsalazar         ###   ########.fr       */
+/*   Created: 2023/05/25 12:50:38 by fsalazar          #+#    #+#             */
+/*   Updated: 2023/05/25 12:50:40 by fsalazar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex_bonus.h"
 
-char	*get_cmd(t_pipex *pipex, char **paths, char *cmd)
+char	*get_cmd(t_pipex *pipex, char **paths, char *cm)
 {
 	char	*tmp;
 	char	*final_cmd;
 
-	if (cmd[0] == '/' || cmd[0] == '.')
-	{
-		if (access(cmd, F_OK | X_OK) == 0)
-			return (cmd);
-		else if (access(cmd, F_OK) == 0 && access(cmd, X_OK) != 0)
-			exit_errors(pipex, cmd, 2, 1);
-		else
-			return (NULL);
-	}
+	if (cm[0] == '/' || !ft_strncmp("../", cm, 3) || !ft_strncmp("./", cm, 2))
+		return (cm);
+	if (pipex->cmd_paths == NULL)
+		return (NULL);
 	while (*paths)
 	{
 		tmp = ft_strjoin(*paths, "/");
-		final_cmd = ft_strjoin(tmp, cmd);
+		final_cmd = ft_strjoin(tmp, cm);
 		free(tmp);
 		if (access(final_cmd, F_OK | X_OK) == 0)
 			return (final_cmd);
@@ -39,47 +34,37 @@ char	*get_cmd(t_pipex *pipex, char **paths, char *cmd)
 	return (NULL);
 }
 
-void	first_child(t_pipex *pipex, char **argv, char **envp)
+void	send_through_pipe(t_pipex *pipex)
 {
-	pipex->input_fd = open(argv[1], O_RDONLY);
-	if (pipex->input_fd < 0)
-		msg_error(argv[1]);
-	close(pipex->pipe[READ]);
-	dup2(pipex->pipe[WRITE], STDOUT_FILENO);
-	dup2(pipex->input_fd, STDIN_FILENO);
-	close(pipex->input_fd);
-	pipex->cmd_args = ft_split(argv[2], ' ');
-	pipex->cmd = get_cmd(pipex, pipex->cmd_paths, pipex->cmd_args[0]);
-	if (pipex->cmd == NULL)
-		exit_errors(pipex, argv[2], 1, 127);
-	if (execve(pipex->cmd, pipex->cmd_args, envp) == -1)
+	if (pipe(pipex->pipe) < 0)
+		perror("Error: ");
+	pipex->pid1 = fork();
+	if (pipex->pid1 < 0)
+		perror("Error: ");
+	if (pipex->pid1 == 0)
 	{
-		free_child(pipex);
-		msg_error(argv[2]);
+		close(pipex->pipe[READ]);
+		dup2(pipex->pipe[WRITE], STDOUT_FILENO);
+		execute_cmd(pipex);
+	}
+	else
+	{
+		close(pipex->pipe[WRITE]);
+		dup2(pipex->pipe[READ], STDIN_FILENO);
+		waitpid(pipex->pid1, NULL, 0);
 	}
 }
 
-void	second_child(t_pipex *pipex, char **argv, char **envp)
+void	execute_cmd(t_pipex *pipex)
 {
-	pipex->output_fd = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (pipex->output_fd < 0)
-		msg_error(argv[4]);
-	close(pipex->pipe[WRITE]);
-	dup2(pipex->pipe[READ], STDIN_FILENO);
-	dup2(pipex->output_fd, STDOUT_FILENO);
-	close(pipex->output_fd);
-	pipex->cmd_args = ft_split(argv[3], ' ');
+	pipex->paths = get_env_path(pipex->envp);
+	pipex->cmd_paths = ft_split(pipex->paths, ':');
+	pipex->cmd_args = ft_split(pipex->argv[pipex->cmd_iter], ' ');
 	pipex->cmd = get_cmd(pipex, pipex->cmd_paths, pipex->cmd_args[0]);
+	free_paths(pipex);
 	if (pipex->cmd == NULL)
-		exit_errors(pipex, argv[3], 1, 127);
-	if (execve(pipex->cmd, pipex->cmd_args, envp) == -1)
-	{
-		free_child(pipex);
-		msg_error(argv[3]);
-	}
-}
-
-void	single_child(t_pipex *pipex, char **argv, char **envp)
-{
-	
+		exit_errors(pipex, pipex->argv[pipex->cmd_iter], 1, 127);
+	if (execve(pipex->cmd, pipex->cmd_args, pipex->envp) == -1)
+		msg_error(pipex->cmd);
+		exit(1);
 }

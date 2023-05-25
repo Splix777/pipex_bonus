@@ -18,7 +18,9 @@ SRC = ft_printf.c	\
 	ft_print_int.c	\
 	ft_print_ptr.c	\
 	ft_print_str.c	\
-	ft_print_uint.c
+	ft_print_uint.c	\
+	get_next_line.c	\
+	get_next_line_utils.c
 
 OBJ = $(SRC:.c=.o)
 
@@ -28,19 +30,15 @@ CFLAGS = -Wall -Werror -Wextra
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	@echo "Creating $(NAME)..."
 	@ar rcs $(NAME) $(OBJ)
 
 %.o: %.c library.h
-	@echo "Compiling $<..."
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	@echo "Cleaning up..."
 	@rm -f $(OBJ)
 
 fclean: clean
-	@echo "Removing $(NAME)..."
 	@rm -f $(NAME)
 
 re: fclean all

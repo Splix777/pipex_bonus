@@ -17,9 +17,9 @@ int	main(int argc, char **argv, char **envp)
 	t_pipex	pipex;
 
 	if (argc != 5)
-		return (ft_printf("Error: Wrong number of arguments\n"));
+		return (ft_putendl_fd("Error: Wrong number of arguments", 2), 1);
 	if (pipe(pipex.pipe) == -1)
-		return (ft_printf("Error: Pipe failed\n"));
+		return (ft_putendl_fd("Error: Pipe failed", 2), 1);
 	pipex.paths = get_env_path(envp);
 	pipex.cmd_paths = ft_split(pipex.paths, ':');
 	pipex.pid1 = fork();

@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   frees.c                                            :+:      :+:    :+:   */
+/*   frees_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fsalazar <fsalazar@student.42madrid.com:>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/19 12:30:24 by fsalazar          #+#    #+#             */
-/*   Updated: 2023/05/19 12:30:25 by fsalazar         ###   ########.fr       */
+/*   Created: 2023/05/25 12:51:14 by fsalazar          #+#    #+#             */
+/*   Updated: 2023/05/25 12:51:16 by fsalazar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex_bonus.h"
 
-void	free_child(t_pipex *pipex)
+void	free_cmd(t_pipex *pipex)
 {
 	int	i;
 
@@ -23,11 +23,13 @@ void	free_child(t_pipex *pipex)
 	free(pipex->cmd);
 }
 
-void	free_parent(t_pipex *pipex)
+void	free_paths(t_pipex *pipex)
 {
 	int	i;
 
 	i = 0;
+	if (pipex->cmd_paths == NULL)
+		return ;
 	while (pipex->cmd_paths[i])
 		free(pipex->cmd_paths[i++]);
 	free(pipex->cmd_paths);

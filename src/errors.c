@@ -27,10 +27,7 @@ void	exit_errors(t_pipex *pipex, char *msg, int reason, int code)
 {
 	write(2, msg, ft_strlen(msg));
 	if (reason == 1)
-		write(2, ": command not found", 19);
-	if (reason == 2)
-		write(2, ": Permission denied", 20);
-	write(2, "\n", 1);
-	free_child(pipex);	
+		write(2, ": command not found\n", 20);
+	free_child(pipex);
 	exit(code);
 }

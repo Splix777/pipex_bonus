@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   errors.c                                           :+:      :+:    :+:   */
+/*   errors_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: fsalazar <fsalazar@student.42madrid.com:>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/19 12:30:46 by fsalazar          #+#    #+#             */
-/*   Updated: 2023/05/19 12:30:47 by fsalazar         ###   ########.fr       */
+/*   Created: 2023/05/25 12:50:46 by fsalazar          #+#    #+#             */
+/*   Updated: 2023/05/25 12:50:47 by fsalazar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,7 @@ void	exit_errors(t_pipex *pipex, char *msg, int reason, int code)
 {
 	write(2, msg, ft_strlen(msg));
 	if (reason == 1)
-		write(2, ": command not found", 19);
-	if (reason == 2)
-		write(2, ": Permission denied", 20);
-	write(2, "\n", 1);
-	free_child(pipex);	
+		write(2, ": command not found\n", 20);
+	free_cmd(pipex);
 	exit(code);
 }

@@ -12,24 +12,19 @@
 
 #include "pipex.h"
 
-char	*get_cmd(t_pipex *pipex, char **paths, char *cmd)
+char	*get_cmd(t_pipex *pipex, char **paths, char *cm)
 {
 	char	*tmp;
 	char	*final_cmd;
 
-	if (cmd[0] == '/' || cmd[0] == '.')
-	{
-		if (access(cmd, F_OK | X_OK) == 0)
-			return (cmd);
-		else if (access(cmd, F_OK) == 0 && access(cmd, X_OK) != 0)
-			exit_errors(pipex, cmd, 2, 1);
-		else
-			return (NULL);
-	}
+	if (cm[0] == '/' || !ft_strncmp("../", cm, 3) || !ft_strncmp("./", cm, 2))
+		return (cm);
+	if (pipex->cmd_paths == NULL)
+		return (NULL);
 	while (*paths)
 	{
 		tmp = ft_strjoin(*paths, "/");
-		final_cmd = ft_strjoin(tmp, cmd);
+		final_cmd = ft_strjoin(tmp, cm);
 		free(tmp);
 		if (access(final_cmd, F_OK | X_OK) == 0)
 			return (final_cmd);
@@ -53,10 +48,7 @@ void	first_child(t_pipex *pipex, char **argv, char **envp)
 	if (pipex->cmd == NULL)
 		exit_errors(pipex, argv[2], 1, 127);
 	if (execve(pipex->cmd, pipex->cmd_args, envp) == -1)
-	{
-		free_child(pipex);
 		msg_error(argv[2]);
-	}
 }
 
 void	second_child(t_pipex *pipex, char **argv, char **envp)
@@ -73,8 +65,5 @@ void	second_child(t_pipex *pipex, char **argv, char **envp)
 	if (pipex->cmd == NULL)
 		exit_errors(pipex, argv[3], 1, 127);
 	if (execve(pipex->cmd, pipex->cmd_args, envp) == -1)
-	{
-		free_child(pipex);
 		msg_error(argv[3]);
-	}
 }

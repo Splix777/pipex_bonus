@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "ft_printf.h"
 
 char	*ft_read_and_save(int fd, char *save)
 {
@@ -21,7 +21,7 @@ char	*ft_read_and_save(int fd, char *save)
 	if (!buffer)
 		return (NULL);
 	bytes = 1;
-	while (!ft_strchr(save, '\n') && bytes != 0)
+	while (!gnl_strchr(save, '\n') && bytes != 0)
 	{
 		bytes = read(fd, buffer, BUFFER_SIZE);
 		if (bytes == -1)
@@ -31,7 +31,7 @@ char	*ft_read_and_save(int fd, char *save)
 			return (NULL);
 		}
 		buffer[bytes] = '\0';
-		save = ft_strjoin(save, buffer);
+		save = gnl_strjoin(save, buffer);
 	}
 	free(buffer);
 	return (save);
@@ -79,7 +79,7 @@ char	*new_save(char *save)
 		free(save);
 		return (NULL);
 	}
-	new = malloc((ft_strlen(save) - index + 1) * sizeof(char));
+	new = malloc((gnl_strlen(save) - index + 1) * sizeof(char));
 	if (!new)
 		return (NULL);
 	index++;
