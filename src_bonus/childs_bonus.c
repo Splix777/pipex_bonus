@@ -66,5 +66,4 @@ void	execute_cmd(t_pipex *pipex)
 		exit_errors(pipex, pipex->argv[pipex->cmd_iter], 1, 127);
 	if (execve(pipex->cmd, pipex->cmd_args, pipex->envp) == -1)
 		msg_error(pipex->cmd);
-		exit(1);
 }

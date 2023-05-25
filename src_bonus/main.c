@@ -21,13 +21,16 @@ int	main(int argc, char **argv, char **envp)
 	if (argc >= 6 && is_here_doc(argv[1]))
 		do_here_doc(&pipex, argc, argv, envp);
 	else
-		do_pipex(&pipex, argc, argv, envp);	
-	send_through_pipe(&pipex);
-	while (pipex.cmd_iter++ < pipex.cmd_count)
+		do_pipex(&pipex, argc, argv, envp);
+	while (pipex.cmd_iter <= pipex.cmd_count)
+	{
 		send_through_pipe(&pipex);
+		pipex.cmd_iter++;
+	}
 	open_outfile(&pipex);
 	execute_cmd(&pipex);
 	close_pipes(&pipex);
 	close_fd(&pipex);
+	system("leaks pipex");
 	return (0);
 }
