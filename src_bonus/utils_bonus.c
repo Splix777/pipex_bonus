@@ -50,6 +50,19 @@ void	open_outfile(t_pipex *pipex)
 	if (pipex->pid1 == 0)
 		execute_cmd(pipex);
 	else
-		waitpid(pipex->pid1, NULL, 0);
+		exit_status(pipex);
+}
+
+void	exit_status(t_pipex *pipex)
+{
+	waitpid(pipex->pid1, &pipex->exit_status, 0);
+	if (WIFEXITED(pipex->exit_status))
+	{
+		if (WEXITSTATUS(pipex->exit_status))
+			pipex->exit_status = WEXITSTATUS(pipex->exit_status);
+	}
+	else
+		pipex->exit_status = 0;
+	exit(pipex->exit_status);
 }
 

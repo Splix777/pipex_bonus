@@ -48,6 +48,7 @@ typedef struct s_pipex
 	int		cmd_iter;
 	int		cmd_count;
 	int		here_doc;
+	int		exit_status;
 	int		argc;
 	char	*limiter;
 	char	*paths;
@@ -79,5 +80,6 @@ void		write_to_pipe(t_pipex *pipex);
 char		*get_env_path(char **envp);
 void		open_infile(t_pipex *pipex);
 void		open_outfile(t_pipex *pipex);
+void		exit_status(t_pipex *pipex);
 
 #endif
