@@ -51,7 +51,6 @@ void	open_outfile(t_pipex *pipex)
 		execute_cmd(pipex);
 	else
 		exit_status(pipex);
-	close (pipex->pipe[WRITE]);
 }
 
 void	exit_status(t_pipex *pipex)
