@@ -79,7 +79,5 @@ void		write_to_pipe(t_pipex *pipex);
 char		*get_env_path(char **envp);
 void		open_infile(t_pipex *pipex);
 void		open_outfile(t_pipex *pipex);
-void		close_pipes(t_pipex *pipex);
-void		close_fd(t_pipex *pipex);
 
 #endif

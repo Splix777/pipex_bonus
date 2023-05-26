@@ -27,13 +27,11 @@ void	open_infile(t_pipex *pipex)
 	if (pipex->input_fd < 0)
 	{
 		pipex->cmd_iter++;
+		pipex->input_fd = open("/tmp/.pipextemp", O_RDONLY | O_CREAT | O_TRUNC, 0644);
 		perror(pipex->argv[1]);
 	}
-	else
-	{
-		dup2(pipex->input_fd, STDIN_FILENO);
-		close(pipex->input_fd);
-	}
+	dup2(pipex->input_fd, STDIN_FILENO);
+	close(pipex->input_fd);
 }
 
 void	open_outfile(t_pipex *pipex)
@@ -42,8 +40,6 @@ void	open_outfile(t_pipex *pipex)
 	if (pipex->output_fd < 0)
 	{
 		perror(pipex->argv[pipex->argc - 1]);
-		close_pipes(pipex);
-		close_fd(pipex);
 		exit(126);
 	}
 	dup2(pipex->output_fd, STDOUT_FILENO);
@@ -57,14 +53,3 @@ void	open_outfile(t_pipex *pipex)
 		waitpid(pipex->pid1, NULL, 0);
 }
 
-void	close_pipes(t_pipex *pipex)
-{
-	close(pipex->pipe[READ]);
-	close(pipex->pipe[WRITE]);
-}
-
-void	close_fd(t_pipex *pipex)
-{
-	close(pipex->input_fd);
-	close(pipex->output_fd);
-}

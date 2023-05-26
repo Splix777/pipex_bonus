@@ -50,8 +50,8 @@ void	send_through_pipe(t_pipex *pipex)
 	else
 	{		
 		close(pipex->pipe[WRITE]);
-		dup2(pipex->pipe[READ], STDIN_FILENO);	
-		waitpid(pipex->pid1, NULL, 0);	
+		waitpid(pipex->pid1, NULL, 0);
+		dup2(pipex->pipe[READ], STDIN_FILENO);			
 	}
 }
 

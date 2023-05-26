@@ -22,13 +22,11 @@ int	main(int argc, char **argv, char **envp)
 		do_here_doc(&pipex, argc, argv, envp);
 	else
 		do_pipex(&pipex, argc, argv, envp);
-	while (pipex.cmd_iter < pipex.cmd_count)
+	while (pipex.cmd_iter <= pipex.cmd_count)
 	{
 		send_through_pipe(&pipex);
 		pipex.cmd_iter++;
 	}
 	open_outfile(&pipex);
-	close_pipes(&pipex);
-	//close_fd(&pipex);
 	return (0);
 }
