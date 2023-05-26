@@ -48,10 +48,10 @@ void	send_through_pipe(t_pipex *pipex)
 		execute_cmd(pipex);
 	}
 	else
-	{		
+	{	
+		dup2(pipex->pipe[READ], STDIN_FILENO);
 		close(pipex->pipe[WRITE]);
-		exit_status(pipex);
-		dup2(pipex->pipe[READ], STDIN_FILENO);			
+		exit_status(pipex);				
 	}
 }
 
