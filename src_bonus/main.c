@@ -28,5 +28,5 @@ int	main(int argc, char **argv, char **envp)
 		pipex.cmd_iter++;
 	}
 	open_outfile(&pipex);
-	return (0);
+	return (pipex.exit_status);
 }

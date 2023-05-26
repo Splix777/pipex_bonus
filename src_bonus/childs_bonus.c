@@ -50,7 +50,7 @@ void	send_through_pipe(t_pipex *pipex)
 	else
 	{		
 		close(pipex->pipe[WRITE]);
-		waitpid(pipex->pid1, NULL, 0);
+		exit_status(pipex);
 		dup2(pipex->pipe[READ], STDIN_FILENO);			
 	}
 }
@@ -66,6 +66,6 @@ void	execute_cmd(t_pipex *pipex)
 		exit_errors(pipex, pipex->argv[pipex->cmd_iter], 1, 127);
 	if (execve(pipex->cmd, pipex->cmd_args, pipex->envp) == -1)
 		perror(pipex->cmd);
-	free_cmd(pipex); 
+	free_cmd(pipex);
 	exit(1);
 }
