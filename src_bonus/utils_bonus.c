@@ -26,10 +26,14 @@ void	open_infile(t_pipex *pipex)
 	pipex->input_fd = open(pipex->argv[1], O_RDONLY);
 	if (pipex->input_fd < 0)
 	{
-		perror(pipex->argv[1]);
 		pipex->cmd_iter++;
+		perror(pipex->argv[1]);
 	}
-	dup2(pipex->input_fd, STDIN_FILENO);
+	else
+	{
+		dup2(pipex->input_fd, STDIN_FILENO);
+		close(pipex->input_fd);
+	}
 }
 
 void	open_outfile(t_pipex *pipex)
@@ -44,6 +48,13 @@ void	open_outfile(t_pipex *pipex)
 	}
 	dup2(pipex->output_fd, STDOUT_FILENO);
 	close(pipex->output_fd);
+	pipex->pid1 = fork();
+	if (pipex->pid1 < 0)
+		ft_putendl_fd("Error: Fork failed", 2);
+	if (pipex->pid1 == 0)
+		execute_cmd(pipex);
+	else
+		waitpid(pipex->pid1, NULL, 0);
 }
 
 void	close_pipes(t_pipex *pipex)

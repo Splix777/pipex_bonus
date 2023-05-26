@@ -88,7 +88,10 @@ char	*new_save(char *save)
 		new[i++] = save[index++];
 	new[i] = '\0';
 	free(save);
-	return (new);
+	if (new[0] != '\0')
+		return (new);
+	free(new);
+	return (NULL);
 }
 
 char	*get_next_line(int fd)

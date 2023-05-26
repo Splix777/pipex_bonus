@@ -48,10 +48,10 @@ void	send_through_pipe(t_pipex *pipex)
 		execute_cmd(pipex);
 	}
 	else
-	{
+	{		
 		close(pipex->pipe[WRITE]);
-		dup2(pipex->pipe[READ], STDIN_FILENO);
-		waitpid(pipex->pid1, NULL, 0);
+		dup2(pipex->pipe[READ], STDIN_FILENO);	
+		waitpid(pipex->pid1, NULL, 0);	
 	}
 }
 
@@ -66,4 +66,5 @@ void	execute_cmd(t_pipex *pipex)
 		exit_errors(pipex, pipex->argv[pipex->cmd_iter], 1, 127);
 	if (execve(pipex->cmd, pipex->cmd_args, pipex->envp) == -1)
 		msg_error(pipex->cmd);
+	exit(1);
 }

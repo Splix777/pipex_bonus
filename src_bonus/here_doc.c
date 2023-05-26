@@ -70,5 +70,6 @@ void	write_to_pipe(t_pipex *pipex)
 	}
 	free(line);
 	close(pipex->pipe[WRITE]);
+	free(pipex->limiter);
 	exit(0);
 }
